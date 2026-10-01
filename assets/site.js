@@ -26,3 +26,37 @@ enquiryForm?.addEventListener('submit', event => {
   window.location.href = `https://wa.me/${enquiryForm.dataset.phone}?text=${encodeURIComponent(message)}`;
 });
 
+const callbackForm = document.querySelector('#callback-form');
+if (callbackForm) {
+  const params = new URLSearchParams(window.location.search);
+  let attribution = {};
+  try { attribution = JSON.parse(sessionStorage.getItem('academy-source') || '{}') || {}; } catch { /* Form works with storage disabled. */ }
+  if (params.has('utm_source')) {
+    attribution = {source:params.get('utm_source'),medium:params.get('utm_medium') || 'shared-link',campaign:params.get('utm_campaign') || 'intro-and-training'};
+    try { sessionStorage.setItem('academy-source',JSON.stringify(attribution)); } catch { /* No storage is needed to submit. */ }
+  }
+  for (const name of ['source','medium','campaign']) {
+    if (typeof attribution[name] === 'string') callbackForm.elements.namedItem(name).value = attribution[name].slice(0,100);
+  }
+  callbackForm.elements.namedItem('landing-page').value = window.location.pathname.slice(0,200);
+  const requestedMode = params.get('mode');
+  const mode = callbackForm.elements.namedItem('mode');
+  if ([...mode.options].some(option => option.value === requestedMode)) mode.value = requestedMode;
+  callbackForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!callbackForm.reportValidity()) return;
+    const button = callbackForm.querySelector('button[type=submit]');
+    const status = document.querySelector('#callback-status');
+    const data = new URLSearchParams(new FormData(callbackForm));
+    if (data.get('bot-field')) return;
+    button.disabled = true; status.textContent = 'Sending your request…';
+    try {
+      const response = await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()});
+      if (!response.ok) throw new Error('Request not saved');
+      window.location.href = '/enquiry-received.html';
+    } catch {
+      status.textContent = 'Your request could not be saved. Please try again or use the Call / WhatsApp buttons. Your details remain in the form.';
+    } finally { button.disabled = false; }
+  });
+}
+

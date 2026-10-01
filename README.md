@@ -19,7 +19,11 @@ Open http://127.0.0.1:8080. Generated HTML is committed and requires no build se
 
 Publish the root static HTML pages, `assets/` (excluding `learning-hero-source.png`), `robots.txt`, `sitemap.xml`, `_headers`, and `_redirects` to the existing hosting project. Canonical URLs target https://thenumbersacademy.in. Netlify recognizes the redirects and cache headers automatically. Keep deployment connected to the existing project so the domain and TLS settings remain intact.
 
-The enquiry form opens a prefilled WhatsApp message to the teacher; the visitor must tap Send. There is no email delivery service or enquiry database.
+The WhatsApp enquiry form opens a prefilled message to the teacher; the visitor must tap Send. The separate `academy-callback` form stores adult callback requests using Netlify Forms. Form detection must be enabled before deploying. It includes a honeypot, required contact consent and campaign labels. Failed submissions retain entered values. The success page is excluded from the sitemap and marked noindex.
+
+The parent landing page is `free-abacus-session.html`; adult teacher-training enquiries use `teacher-training.html`. Callback enquiries are visible in the existing Netlify project's Forms dashboard. Configure submission notifications there if the teacher wants email alerts. No advertising campaign or outreach message is automatically launched. Ready-to-share drafts are in `outreach-messages.md`.
+
+The operational target for 2–8 October 2026 is two genuine completed enquiry conversations. Form submissions and Call/WhatsApp clicks are not completed calls. The teacher must answer inbound calls and follow up on saved requests. Use Netlify's submitted source/campaign fields plus a simple internal call log to distinguish child-course enquiries from adult training enquiries. Paid ads are excluded from this plan.
 
 Family feedback links directly to WhatsApp. No sample testimonials or unverified ratings are published. The legacy comments-app is retained locally but is not part of the static production release.
 

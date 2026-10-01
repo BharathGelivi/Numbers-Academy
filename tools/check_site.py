@@ -59,7 +59,13 @@ for path in sorted(ROOT.glob('*.html')):
 ns={'s':'http://www.sitemaps.org/schemas/sitemap/0.9'}
 sitemap=ET.parse(ROOT / 'sitemap.xml')
 urls=[node.text for node in sitemap.findall('.//s:loc',ns)]
-assert len(urls) == len(pages) == 10
+assert len(urls) == len(pages) == 13
 assert len(set(urls)) == len(urls)
 assert 'Sitemap: https://thenumbersacademy.in/sitemap.xml' in (ROOT/'robots.txt').read_text()
+for name in ('free-abacus-session.html','teacher-training.html','contact-page.html'):
+    html = (ROOT/name).read_text(encoding='utf-8')
+    assert 'name="academy-callback"' in html and 'data-netlify="true"' in html
+    assert 'netlify-honeypot="bot-field"' in html and 'name="consent"' in html
+    assert 'unemployed' not in html.lower()
+assert 'enquiry-received.html' not in '\n'.join(urls)
 print(f'PASS: {len(pages)} pages; local links, images, headings, metadata, structured data, phone and sitemap.')
