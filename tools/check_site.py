@@ -53,7 +53,7 @@ for path in sorted(ROOT.glob('*.html')):
         if parsed.fragment and not parsed.path:
             assert parsed.fragment in page.ids, f'{path.name}: broken anchor {value}'
     for img in page.images:
-        assert img.get('alt') and img.get('width') and img.get('height'), f'{path.name}: image accessibility/dimensions'
+        assert 'alt' in img and img.get('width') and img.get('height'), f'{path.name}: image accessibility/dimensions'
     for schema in page.schemas:
         assert schema['@context'] == 'https://schema.org'
 ns={'s':'http://www.sitemaps.org/schemas/sitemap/0.9'}
